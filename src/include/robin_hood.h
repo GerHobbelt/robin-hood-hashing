@@ -768,6 +768,15 @@ struct hash : public std::hash<T> {
         // return mixed of that, to be save against identity has
         return hash_int(static_cast<detail::SizeT>(result));
     }
+
+    template <typename K>
+    size_t operator()(K const& obj) const
+        noexcept(noexcept(std::declval<std::hash<T>>().operator()(std::declval<K const&>()))) {
+        // call base hash
+        auto result = std::hash<T>::operator()(obj);
+        // return mixed of that, to be save against identity has
+        return hash_int(static_cast<uint64_t>(result));
+    }
 };
 
 template <typename CharT>
